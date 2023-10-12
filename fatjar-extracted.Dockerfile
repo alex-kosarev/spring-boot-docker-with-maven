@@ -43,7 +43,7 @@ COPY --from=build /build/target/extracted/dependencies .
 COPY --from=build /build/target/extracted/snapshot-dependencies .
 COPY --from=build /build/target/extracted/spring-boot-loader .
 
-# В конце укажем точку входа. Выбран вариант с использованием sh -c для того, чтобы
+# В конце укажем точку входа. Выбран вариант с использованием exec для того, чтобы
 # можно было передать в строку запуска дополнительные параметры запуска - JAVA_OPTS, а так же
 # ${0} и ${@} для передачи аргументов запуска.
-ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} org.springframework.boot.loader.JarLauncher ${0} ${@}"]
+ENTRYPOINT exec java ${JAVA_OPTS} org.springframework.boot.loader.JarLauncher ${0} ${@}

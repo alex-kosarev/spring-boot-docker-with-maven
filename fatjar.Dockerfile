@@ -41,7 +41,7 @@ WORKDIR /application
 # Скопируем "толстый" JAR
 COPY --from=build /build/target/${JAR_FILE} application.jar
 
-# В конце укажем точку входа. Выбран вариант с использованием sh -c для того, чтобы
+# В конце укажем точку входа. Выбран вариант с использованием exec для того, чтобы
 # можно было передать в строку запуска дополнительные параметры запуска - JAVA_OPTS, а так же
 # ${0} и ${@} для передачи аргументов запуска.
-ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -jar application.jar ${0} ${@}"]
+ENTRYPOINT exec java ${JAVA_OPTS} -jar application.jar ${0} ${@}

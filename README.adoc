@@ -131,11 +131,11 @@ WORKDIR /application
 COPY target/${JAR_FILE} application.jar
 COPY target/dependency lib
 
-# В конце укажем точку входа. Выбран вариант с использованием sh -c для того, чтобы
+# В конце укажем точку входа. Выбран вариант с использованием exec для того, чтобы
 # можно было передать в строку запуска дополнительные параметры запуска - JAVA_OPTS, а так же
 # ${0} и ${@} для передачи аргументов запуска.
 
-ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -cp lib/*:application.jar pro.akosarev.sandbox.GreetingsMavenApplication ${0} ${@}"]
+ENTRYPOINT exec java ${JAVA_OPTS} -cp lib/*:application.jar pro.akosarev.sandbox.GreetingsMavenApplication ${0} ${@}
 ----
 
 Теперь мы можем собрать OCI-образ при помощи Docker:
@@ -261,7 +261,7 @@ ARG JAR_FILE=sandbox-greetings-maven-23.1.1-SNAPSHOT.jar
 WORKDIR /application
 COPY --from=build /build/target/${JAR_FILE} application.jar
 COPY --from=build /build/target/dependency lib
-ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -cp lib/*:application.jar pro.akosarev.sandbox.GreetingsMavenApplication ${0} ${@}"]
+ENTRYPOINT exec java ${JAVA_OPTS} -cp lib/*:application.jar pro.akosarev.sandbox.GreetingsMavenApplication ${0} ${@}
 ----
 
 Теперь OCI-образ собирается одной командой:
@@ -322,7 +322,7 @@ WORKDIR /application
 COPY --from=build /build/target/${JAR_FILE} application.jar
 
 # В случае с "толстым" JAR-архивом мы можем запускать приложение при помощи java -jar
-ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -jar application.jar ${0} ${@}"]
+ENTRYPOINT exec java ${JAVA_OPTS} -jar application.jar ${0} ${@}
 ----
 
 Однако для ускорения запуска приложения вы можете распаковать его.
@@ -370,7 +370,7 @@ WORKDIR /application
 COPY --from=build /build/target/lib/BOOT-INF/lib lib
 COPY --from=build /build/target/lib/META-INF ./META-INF
 COPY --from=build /build/target/lib/BOOT-INF/classes .
-ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -cp lib/*:. pro.akosarev.sandbox.GreetingsMavenApplication ${0} ${@}"]
+ENTRYPOINT java ${JAVA_OPTS} -cp lib/*:. pro.akosarev.sandbox.GreetingsMavenApplication ${0} ${@}
 ----
 
 === Spring Boot: слои и JarLauncher
@@ -427,7 +427,7 @@ COPY --from=build /build/target/extracted/application .
 COPY --from=build /build/target/extracted/dependencies .
 COPY --from=build /build/target/extracted/snapshot-dependencies .
 COPY --from=build /build/target/extracted/spring-boot-loader .
-ENTRYPOINT ["sh", "-c", "java org.springframework.boot.loader.JarLauncher ${0} ${@}"]
+ENTRYPOINT exec java org.springframework.boot.loader.JarLauncher ${0} ${@}
 ----
 
 == Spring Boot Maven Plugin и сборка образов

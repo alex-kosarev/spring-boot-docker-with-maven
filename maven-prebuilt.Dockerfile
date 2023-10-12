@@ -27,7 +27,7 @@ WORKDIR /application
 COPY target/${JAR_FILE} application.jar
 COPY target/dependency lib
 
-# В конце укажем точку входа. Выбран вариант с использованием sh -c для того, чтобы
+# В конце укажем точку входа. Выбран вариант с использованием exec для того, чтобы
 # можно было передать в строку запуска дополнительные параметры запуска - JAVA_OPTS, а так же
 # ${0} и ${@} для передачи аргументов запуска.
-ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -cp lib/*:application.jar pro.akosarev.sandbox.GreetingsMavenApplication ${0} ${@}"]
+ENTRYPOINT exec java ${JAVA_OPTS} -cp lib/*:application.jar pro.akosarev.sandbox.GreetingsMavenApplication ${0} ${@}
