@@ -370,7 +370,7 @@ WORKDIR /application
 COPY --from=build /build/target/lib/BOOT-INF/lib lib
 COPY --from=build /build/target/lib/META-INF ./META-INF
 COPY --from=build /build/target/lib/BOOT-INF/classes .
-ENTRYPOINT java ${JAVA_OPTS} -cp lib/*:. pro.akosarev.sandbox.GreetingsMavenApplication ${0} ${@}
+ENTRYPOINT exec java ${JAVA_OPTS} -cp lib/*:. pro.akosarev.sandbox.GreetingsMavenApplication ${0} ${@}
 ----
 
 === Spring Boot: слои и JarLauncher
