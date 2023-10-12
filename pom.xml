@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>pro.akosarev.sandbox</groupId>
+    <artifactId>sandbox-greetings-maven</artifactId>
+    <version>23.1.1-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <spring-boot.version>3.1.4</spring-boot.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>2.2</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <image>
+                        <!-- Имя образа -->
+                        <name>sandbox-greetings-maven</name>
+                        <!-- Список используемых Buildpacks -->
+                        <buildpacks>
+                            <buildpack>paketobuildpacks/ca-certificates:3.6.3</buildpack>
+                            <buildpack>paketobuildpacks/bellsoft-liberica:10.4.0</buildpack>
+                            <buildpack>paketobuildpacks/syft:1.32.1</buildpack>
+                            <buildpack>paketobuildpacks/executable-jar:6.7.4</buildpack>
+                            <buildpack>paketobuildpacks/dist-zip:5.6.4</buildpack>
+                            <buildpack>paketobuildpacks/spring-boot:5.26.1</buildpack>
+                        </buildpacks>
+                        <!-- Список пробрасываемых директорий в Buildpacks -->
+                        <bindings>
+                            <binding>${project.basedir}/platform/bindings:/platform/bindings</binding>
+                        </bindings>
+                    </image>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
